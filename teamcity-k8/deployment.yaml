@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+  name: teamcity-server-deployment
+
+  labels:
+    app: teamcity-server
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: teamcity-server
+
+  template:
+    metadata:
+      labels:
+        app: teamcity-server
+
+    spec:
+      containers:
+        - name: teamcity-server
+          image: jetbrains/teamcity-server
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: teamcity-server-datadir-volume
+              mountPath: "/data/teamcity_server/datadir"
+      volumes:
+        - name: teamcity-server-datadir-volume
+          persistentVolumeClaim:
+            claimName: teamcity-server-claim

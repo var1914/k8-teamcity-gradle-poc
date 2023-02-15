@@ -1,0 +1,24 @@
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: teamcity-server-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: kube-local-storgae
+  resources:
+    requests:
+      storage: 5Gi
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: teamcity-agent-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: kube-local-storgae
+  resources:
+    requests:
+      storage: 5Gi
