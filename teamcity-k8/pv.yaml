@@ -4,7 +4,29 @@ metadata:
   name: teamcity-pv
 spec:
   capacity:
-    storage: 10Gi
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: kube-local-storgae
+  local:
+    path: /Users/varunrajput/mobilityware
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - docker-desktop
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: teamcity-agent-pv
+spec:
+  capacity:
+    storage: 5Gi
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
