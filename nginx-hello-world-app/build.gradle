@@ -22,6 +22,11 @@ kubernetes {
   }
 }
 
+def stage(String stageName, Closure closure) {
+    println "Executing stage: $stageName"
+    closure()
+}
+
 // Define the pipeline stages
 def pipeline = {
   // Stage 1: Clean the project
@@ -48,13 +53,6 @@ pipeline {
   environment {
     project_name = 'gradle-nginx-hello-workld'
   }
-  
-  stages {
-    stage('Initialize') {
-      steps {
-        sh 'echo "Starting build..."'
-      }
-    }
     
     // Run the pipeline stages
     pipeline()
