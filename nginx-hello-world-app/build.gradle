@@ -6,7 +6,6 @@
  */
 plugins {
     id 'java'
-    id 'com.bmuschko.docker-remote-api' version '6.1.3'
     id 'org.eclipse.jkube.kubernetes' version '1.10.1'
 }
 
@@ -23,11 +22,41 @@ kubernetes {
   }
 }
 
-task buildMyAppImage(type: DockerBuildImage) {
-    inputDir = file('./')
-    images.add("gradle-nginx-hello-workld:latest")
+// Define the pipeline stages
+def pipeline = {
+  // Stage 1: Clean the project
+  stage('Clean') {
+    sh 'gradle clean'
+  }
+  
+  // Stage 2: Build the project
+  stage('Build') {
+    sh 'gradle build'
+  }
+  
+  
+  // Stage 3: Build and publish the Docker image
+  stage('Build and Publish Docker Image') {
+      sh "docker build -t ${project_name} ."
+      sh "docker tag ${project_name} ${project_name}:latest"
+  }
 }
 
-task pushImage(type: DockerPushImage) {
-    dependsOn buildMyAppImage
+// Define the pipeline steps
+pipeline {
+  
+  environment {
+    project_name = 'gradle-nginx-hello-workld'
+  }
+  
+  stages {
+    stage('Initialize') {
+      steps {
+        sh 'echo "Starting build..."'
+      }
+    }
+    
+    // Run the pipeline stages
+    pipeline()
+  }
 }
