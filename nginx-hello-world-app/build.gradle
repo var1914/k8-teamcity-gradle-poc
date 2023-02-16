@@ -6,6 +6,7 @@
  */
 plugins {
     id 'java'
+    id 'com.bmuschko.docker-remote-api' version '9.2.1'
     id 'org.eclipse.jkube.kubernetes' version '1.10.1'
 }
 
@@ -22,38 +23,8 @@ kubernetes {
   }
 }
 
-def stage(String stageName, Closure closure) {
-    println "Executing stage: $stageName"
-    closure()
+task buildMyAppImage(type: DockerBuildImage) {
+    inputDir = file('./')
+    images.add("gradle-nginx-hello-workld:latest")
 }
 
-// Define the pipeline stages
-def pipeline = {
-  // Stage 1: Clean the project
-  stage('Clean') {
-    sh 'gradle clean'
-  }
-  
-  // Stage 2: Build the project
-  stage('Build') {
-    sh 'gradle build'
-  }
-  
-  
-  // Stage 3: Build and publish the Docker image
-  stage('Build and Publish Docker Image') {
-      sh "docker build -t ${project_name} ."
-      sh "docker tag ${project_name} ${project_name}:latest"
-  }
-}
-
-// Define the pipeline steps
-pipeline {
-  
-  environment {
-    project_name = 'gradle-nginx-hello-workld'
-  }
-    
-    // Run the pipeline stages
-    pipeline()
-  }
